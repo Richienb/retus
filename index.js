@@ -75,7 +75,7 @@ const retus = (url, options = {}) => {
 }
 
 const createInstance = (defaults = {}) => {
-	const newRetus = retus
+	const newRetus = (url, options) => retus(url, { ...defaults, ...options })
 
 	for (const method of ["get", "post", "put", "patch", "head", "delete"]) {
 		newRetus[method] = (url, options = {}) => newRetus(url, { method, ...options })
