@@ -1,8 +1,8 @@
 {
-	"name": "the-module",
+	"name": "retus",
 	"version": "0.0.0",
-	"description": "My awesome module.",
-	"repository": "https://github.com/Richienb/the-module.git",
+	"description": "Synchronous HTTP request library.",
+	"repository": "https://github.com/Richienb/retus.git",
 	"author": "Richie Bendall <richiebendall@gmail.com>",
 	"license": "MIT",
 	"main": "index.js",
@@ -17,8 +17,16 @@
 		"lint": "xo",
 		"test": "yarn lint && ava"
 	},
-	"keywords": [],
-	"dependencies": {},
+	"keywords": [
+		"request",
+		"sync",
+		"fetch",
+		"get",
+		"http"
+	],
+	"dependencies": {
+		"sync-request": "^6.1.0"
+	},
 	"devDependencies": {
 		"ava": "^3.5.0",
 		"eslint-config-richienb": "^0.3.0",
