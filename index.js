@@ -3,6 +3,15 @@
 const request = require("sync-request")
 
 const joinUrl = (base, extension) => new URL(base, extension).href
+const isBadStatusCode = (code) => code >= 400
+
+class HTTPError extends Error {
+	constructor(error, statusCode) {
+		super(error)
+		this.name = "HTTPError"
+		this.statusCode = statusCode
+	}
+}
 
 const retus = (url, options = {}) => {
 	options = {
@@ -14,6 +23,7 @@ const retus = (url, options = {}) => {
 		},
 		timeout: 10000,
 		responseType: options.json ? "json" : "text",
+		throwHttpErrors: true,
 		...options,
 	}
 
@@ -38,13 +48,29 @@ const retus = (url, options = {}) => {
 	const response = request(options.method, url, requestOptions)
 
 	let body
-	if (["text", "json"].includes(options.responseType)) body = response.getBody("utf8")
+	if (["text", "json"].includes(options.responseType)) {
+		try {
+			body = response.getBody("utf8")
+		} catch (error) {
+			if (error.statusCode && !options.throwHttpErrors) {
+				body = ""
+			} else if (isBadStatusCode(error.statusCode)) {
+				throw new HTTPError(`Server responded with status code ${response.statusCode}.`, response.statusCode)
+			} else {
+				throw error
+			}
+		}
+	}
+
 	if (options.responseType === "json") body = JSON.parse(body)
+	if (options.responseType === "none" && isBadStatusCode(response.statusCode) && options.throwHttpErrors) {
+		throw new HTTPError(`Server responded with status code ${response.statusCode}.`, response.statusCode)
+	}
 
 	return {
 		statusCode: response.statusCode,
 		headers: response.headers,
-		body,
+		body: body === undefined ? "" : body,
 	}
 }
 
@@ -62,3 +88,4 @@ const createInstance = (defaults = {}) => {
 }
 
 module.exports = createInstance()
+module.exports.HTTPError = HTTPError

@@ -1,3 +1,9 @@
+/** An error that is thrown when the HTTP status code is 4xx or 5xx. */
+declare class HTTPError extends Error {
+	constructor(error: string, statusCode: number)
+	statusCode: number
+}
+
 /** Synchronous HTTP request library. */
 declare const retus: {
 	/**
@@ -60,6 +66,8 @@ declare const retus: {
 	 * @param defaultOptions The options to extend with.
 	*/
 	extend(defaultOptions: retus.Options): typeof retus
+
+	readonly HTTPError: typeof HTTPError
 }
 
 declare namespace retus {
@@ -113,6 +121,12 @@ declare namespace retus {
 
 		/** The body to send with the request. */
 		body?: string
+
+		/**
+		 * Throw an error if the status code is 4xx or 5xx.
+		 * @default true
+		*/
+		throwHttpErrors?: boolean
 	}
 
 	export interface ReturnData<ReturnType = unknown> {
@@ -125,6 +139,8 @@ declare namespace retus {
 		/** The data returned by the request. */
 		body: ReturnType
 	}
+
+	export type HTTPError = InstanceType<typeof retus.HTTPError>
 }
 
 export = retus

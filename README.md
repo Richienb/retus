@@ -98,6 +98,13 @@ Type: `string`
 
 The body to send with the request.
 
+##### throwHttpErrors
+
+Type: `boolean`\
+Default: `false`
+
+Throw an error if the status code is 4xx or 5xx.
+
 ### retus.get(url, options)
 ### retus.post(url, options)
 ### retus.put(url, options)
@@ -114,3 +121,7 @@ Create a new Retus instance with the provided default options.
 ### retus.extend(defaultOptions)
 
 Create a new Retus instance, extending the current default options with the provided ones.
+
+### retus.HTTPError
+
+An error that is thrown when the HTTP status code is 4xx or 5xx.
