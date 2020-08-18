@@ -1,3 +1,5 @@
+import { Response } from "sync-request"
+
 /** An error that is thrown when the HTTP status code is 4xx or 5xx. */
 declare class HTTPError extends Error {
 	constructor(error: string, statusCode: number)
@@ -17,43 +19,43 @@ declare const retus: {
 	 * //=> "<!doctype html>..."
 	 * ```
 	*/
-	<ReturnType = unknown>(url: string, options?: retus.Options): retus.ReturnData<ReturnType>
+	<ReturnType = unknown>(url: string, options?: retus.Options): retus.ResponseData<ReturnType>
 
 	/**
 	 * Fetch the given url with `{ method: "get" }`.
 	 * @param url The URL to fetch.
 	*/
-	get<ReturnType = unknown>(url: string, options?: retus.Options): retus.ReturnData<ReturnType>
+	get<ReturnType = unknown>(url: string, options?: retus.Options): retus.ResponseData<ReturnType>
 
 	/**
 	 * Fetch the given url with `{ method: "post" }`.
 	 * @param url The URL to fetch.
 	*/
-	post<ReturnType = unknown>(url: string, options?: retus.Options): retus.ReturnData<ReturnType>
+	post<ReturnType = unknown>(url: string, options?: retus.Options): retus.ResponseData<ReturnType>
 
 	/**
 	 * Fetch the given url with `{ method: "put" }`.
 	 * @param url The URL to fetch.
 	*/
-	put<ReturnType = unknown>(url: string, options?: retus.Options): retus.ReturnData<ReturnType>
+	put<ReturnType = unknown>(url: string, options?: retus.Options): retus.ResponseData<ReturnType>
 
 	/**
 	 * Fetch the given url with `{ method: "patch" }`.
 	 * @param url The URL to fetch.
 	*/
-	patch<ReturnType = unknown>(url: string, options?: retus.Options): retus.ReturnData<ReturnType>
+	patch<ReturnType = unknown>(url: string, options?: retus.Options): retus.ResponseData<ReturnType>
 
 	/**
 	 * Fetch the given url with `{ method: "head" }`.
 	 * @param url The URL to fetch.
 	*/
-	head<ReturnType = unknown>(url: string, options?: retus.Options): retus.ReturnData<ReturnType>
+	head<ReturnType = unknown>(url: string, options?: retus.Options): retus.ResponseData<ReturnType>
 
 	/**
 	 * Fetch the given url with `{ method: "delete" }`.
 	 * @param url The URL to fetch.
 	*/
-	delete<ReturnType = unknown>(url: string, options?: retus.Options): retus.ReturnData<ReturnType>
+	delete<ReturnType = unknown>(url: string, options?: retus.Options): retus.ResponseData<ReturnType>
 
 	/**
 	 * Create a new Retus instance with the provided default options.
@@ -71,12 +73,14 @@ declare const retus: {
 }
 
 declare namespace retus {
+	export type HTTPMethod = "get" | "head" | "post" | "put" | "delete" | "connect" | "options" | "trace" | "patch"
+
 	export interface Options {
 		/**
 		 * The HTTP method.
 		 * @default get
 		*/
-		method?: "get" | "head" | "post" | "put" | "delete" | "connect" | "options" | "trace" | "patch"
+		method?: retus.HTTPMethod
 
 		/** The URL to prefix the request url with. */
 		prefixUrl?: string
@@ -129,12 +133,12 @@ declare namespace retus {
 		throwHttpErrors?: boolean
 	}
 
-	export interface ReturnData<ReturnType = unknown> {
+	export interface ResponseData<ReturnType = unknown> {
 		/** The HTTP status code returned by the request. */
 		statusCode: number
 
 		/** The HTTP headers returned by the request. */
-		headers: response.headers
+		headers: Response["headers"]
 
 		/** The data returned by the request. */
 		body: ReturnType
